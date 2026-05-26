@@ -1,0 +1,117 @@
+<h2>元素</h2>
+
+<h3>有起始标签和结束标签的元素（可以实现嵌套）</h3>
+
+<pre>
+
+ &lt html &gt 整个页面的根元素
+
+ &lt head &gt 页面基本属性（一般包含 &lt title &gt ,  &lt style &gt ,  &lt meta &gt ,  &lt link &gt ,  &lt script &gt ,  &lt noscript &gt ,  &lt base &gt ）
+
+ &lt title &gt 页面标题
+ &lt base &gt 设置本页面中所有链接的默认目录（如果没有这句话默认目录就是html文档所在的目录）
+ &lt link &gt 常用于连接至CSS样式
+ &lt style &gt 直接定义CSS样式用于本页面，不能链接CSS文件
+ &lt script &gt 加载脚本
+ &lt meta &gt 页面潜在信息{
+
+charset="UTF-8"页面字符编码
+
+name="#" content="#"
+viewpoint移动端视口
+description页面摘要
+robots爬虫规则
+keywords关键词
+author作者
+
+theme-color浏览器UI主题色
+}
+
+ &lt body &gt 页面主体
+
+ &lt header &gt 页眉（可以是整页的页眉，也可以是某一块的）
+ &lt footer &gt 页脚（同上）
+ &lt aside &gt 侧边栏
+
+ &lt div &gt 一个区域，强调占据页面的一块视觉空间
+ &lt nav &gt 导航栏区域
+ &lt p &gt  &lt /pre 
+&gt 段落
+
+ &lt article &gt 整篇文章
+ &lt h1 &gt 标题（按字体大小分别有h1-h6）
+ &lt section &gt 标题下的一个章节，也可以是一块区域（比如图片+文章）
+ &lt q &gt 行内引用（自动加引号）
+ &lt blockqoute &gt 整段引用（自动缩进，不能用裸文，加 &lt p &gt , &lt footer &gt 之类的）
+
+ &lt a href="#" &gt  &lt /a &gt 链接
+
+ &lt b &gt 文本加粗
+ &lt i &gt 文本斜体
+ &lt sub &gt 上标
+ &lt sup &gt 下标
+ &lt del &gt 删除线
+ &lt ins &gt 插入字（大部分情况是下划线）
+
+ &lt table &gt 表格
+ &lt code &gt 代码
+ &lt ul &gt 
+	 &lt li &gt x &lt /li &gt 
+	 &lt li &gt y &lt /li &gt 
+ &lt /ul &gt 
+创建无序列表
+
+ &lt button &gt 按键
+
+ &lt abbr &gt 文本缩写（用title属性说明全称，鼠标悬停显示，似乎缩写自己乱取也没事？）
+ &lt pre &gt 预演示文本（原样保留其中的连续空格，空行，缩进）
+ &lt bdo dir="rtl" &gt 文字方向（right to left）
+
+空元素（代码仅一行，没有结束标签）
+
+ &lt br / &gt 换行
+ &lt hr / &gt 水平分割线
+ &lt img src="#" width="#" height="#" / &gt 图片（文件来源，宽，高）
+ &lt audio / &gt 音频
+ &lt input / &gt 输入框
+
+</pre>
+
+<h2>元素属性</h2>
+
+<h3>常见属性（一定要有值）</h3>
+
+<pre>
+
+id 所有元素 标识符
+title 所有元素 元素信息，鼠标悬停显示
+class 所有元素 指定一个类
+style 所有元素 直接应用css样式，无需额外文件
+
+rel  &lt link &gt  链接的文件与页面的关系（链接CSS文件则为stylesheet）
+href  &lt a &gt , &lt link &gt  指定链接的URL
+src  &lt img &gt , &lt script &gt , &lt iframe &gt  指定资源的（图片，脚本，框架）URL
+alt  &lt img &gt  为图像提供替代文本
+type  &lt input &gt , &lt button &gt  指定输入的类型（number,text,password）
+value  &lt input &gt , &lt button &gt , &lt option &gt 指定元素初始值
+
+</pre>
+
+<h3>布尔属性（只有yes or no的区别，所以写了就是有，没写就没有）</h3>
+
+<pre>
+
+autoplay  &lt audio &gt , &lt video &gt  自动播放媒体
+disabled 表单元素 禁用
+readonly 表单元素 只读
+reqiured 表单元素 必填
+
+</pre>
+
+<h3>事件处理属性（待补充）</h3>
+
+
+<h3>自定义属性（JavaScript实现）</h3>
+
+<pre>data-#=#</pre>
+

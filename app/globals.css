@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*以下三条为黑白主题变换需要用到的样式*/
+
+:root[data-theme='light'] {
+  --bg: #ffffff;
+  --text: #111111;
+  --border-color: #e5e5e5;
+}
+
+:root[data-theme='dark'] {
+  --bg: #1a1a1a;
+  --text: #f5f5f5;
+  --border-color: #333333;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* 文章内容排版样式（恢复被 Tailwind preflight 重置的元素样式） */
+.article-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.article-content h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  scroll-margin-top: 110px;
+}
+.article-content h3 {
+  font-size: 1.1rem;
+  scroll-margin-top: 110px;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.article-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.75;
+}
+.article-content pre {
+  background: var(--border-color);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+.article-content code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}
+.article-content ul,
+.article-content ol {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+.article-content li {
+  margin-bottom: 0.25rem;
+  line-height: 1.6;
+}
+
+/* 项目日志时间线样式 */
+.journal-list ol {
+  list-style: none;
+  padding-left: 0;
+  counter-reset: journal;
+  border-left: 2px solid var(--border-color);
+  margin-left: 0.5rem;
+}
+.journal-list ol > li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+  counter-increment: journal;
+}
+.journal-list ol > li::before {
+  content: counter(journal);
+  position: absolute;
+  left: -0.85rem;
+  top: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--border-color);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5rem;
+}
+.journal-list ol > li time {
+  display: block;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  margin-bottom: 0.15rem;
+}
+.journal-list ol > li p {
+  margin-bottom: 0;
+}

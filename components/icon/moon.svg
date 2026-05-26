@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <mask id="moon-cutout">
+    <rect width="24" height="24" fill="white"/>
+    <circle cx="16" cy="10" r="9" fill="black"/>
+  </mask>
+  <circle cx="9" cy="12" r="9" fill="white" mask="url(#moon-cutout)"/>
+</svg>
