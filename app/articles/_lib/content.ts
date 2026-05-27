@@ -4,7 +4,7 @@ import { join } from 'path';
 export interface Heading {
   id: string;
   text: string;
-  level: 2 | 3;
+  level: 2 | 3 | 4 | 5 | 6;
 }
 
 export function getArticleContent(id: string): string {
@@ -32,9 +32,9 @@ export function processArticleContent(id: string): {
   const usedIds = new Set<string>();
 
   const content = raw.replace(
-    /<h([23])([^>]*)>([\s\S]*?)<\/h[23]>/gi,
+    /<h([2-6])([^>]*)>([\s\S]*?)<\/h[2-6]>/gi,
     (_match: string, level: string, attrs: string, text: string) => {
-      const lv = Number(level) as 2 | 3;
+      const lv = Number(level) as 2 | 3 | 4 | 5 | 6;
       const cleanText = text.replace(/<[^>]+>/g, '').trim();
       let slug = slugify(cleanText) || 'heading';
       // 去重：若 slug 已存在，追加序号

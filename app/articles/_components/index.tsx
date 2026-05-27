@@ -67,7 +67,7 @@ export default function ArticlesSidebar({ currentId }: ArticlesSidebarProps) {
   const isActive = (id: string) => currentId === id;
 
   return (
-    <aside style={{ width: 220, borderRight: '1px solid var(--border-color, #ccc)', position: 'fixed', top: 110, left: '10%', bottom: '3rem', overflowY: 'auto', zIndex: 5 }}>
+    <aside style={{ width: 220, borderRight: '1px solid var(--border-color, #ccc)', position: 'fixed', top: 110, left: '10%', bottom: '3rem', overflowY: 'auto', zIndex: 5, paddingBottom: '1rem' }}>
       <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
         {categories.map((cat) => {
           const prefix = cat.id.split('-')[0];

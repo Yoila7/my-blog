@@ -45,7 +45,7 @@ export default function TocMenu({ headings }: TocMenuProps) {
   if (headings.length === 0) return null;
 
   return (
-    <aside style={{ width: 200, borderLeft: '1px solid var(--border-color, #ccc)', paddingLeft: '1rem', position: 'fixed', top: 110, right: '10%', bottom: '3rem', overflowY: 'auto', zIndex: 5 }}>
+    <aside style={{ width: 200, borderLeft: '1px solid var(--border-color, #ccc)', paddingLeft: '1rem', position: 'fixed', top: 110, right: '10%', bottom: '3rem', overflowY: 'auto', zIndex: 5, paddingBottom: '1rem' }}>
       <nav>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
           {headings.map((h) => (
@@ -62,7 +62,7 @@ export default function TocMenu({ headings }: TocMenuProps) {
                   color: activeId === h.id ? '#808080' : 'inherit',
                   fontSize: '0.8rem',
                   fontWeight: activeId === h.id ? 600 : 400,
-                  padding: h.level === 3 ? '2px 0 2px 1rem' : '2px 0',
+                  padding: `2px 0 2px ${(h.level - 2) * 0.75}rem`,
                   lineHeight: 1.4,
                   transition: 'color 0.15s ease',
                 }}
