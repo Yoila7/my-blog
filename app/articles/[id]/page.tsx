@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { fetchArticles, fetchArticle, type Heading } from '../_lib/api';
 import ArticlesSidebar from '../_components';
 import TocMenu from '../_components/menu';
+import Comments from '../_components/comments';
 
 export default async function ArticlePage({
   params,
@@ -25,7 +26,7 @@ export default async function ArticlePage({
   return (
     <div>
       <ArticlesSidebar currentId={id} articles={articles} />
-      <main style={{ marginLeft: 'calc(220px + 2rem)', marginRight: 'calc(200px + 2rem)', paddingBottom: 'calc(100vh - 150px)' }}>
+      <div style={{ marginLeft: 'calc(220px + 2rem)', marginRight: 'calc(200px + 2rem)' }}>
         <article>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
             {article.title}
@@ -38,7 +39,9 @@ export default async function ArticlePage({
           </time>
           <div className="article-content" dangerouslySetInnerHTML={{ __html: content }} />
         </article>
-      </main>
+        <Comments />
+        <div style={{ paddingBottom: '60vh' }} />
+      </div>
       <TocMenu headings={headings} />
     </div>
   );

@@ -13,7 +13,13 @@ type Config struct {
 }
 
 func Load() *Config {
-	_ = godotenv.Load()
+	// 从二进制所在目录加载 .env，不依赖 CWD
+	exe, err := os.Executable()
+	if err == nil {
+		_ = godotenv.Load(filepath.Join(filepath.Dir(exe), ".env"))
+	} else {
+		_ = godotenv.Load()
+	}
 
 	cfg := &Config{
 		Port:   getEnv("PORT", "8080"),

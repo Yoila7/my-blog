@@ -9,6 +9,8 @@ import (
 	"github.com/Yoila7/myGoProject/config"
 	"github.com/Yoila7/myGoProject/database"
 	"github.com/Yoila7/myGoProject/handlers"
+	"github.com/Yoila7/myGoProject/middleware"
+	"github.com/Yoila7/myGoProject/models"
 )
 
 func main() {
@@ -16,6 +18,9 @@ func main() {
 
 	// 初始化数据库
 	database.Init(cfg.DBPath)
+
+	// 自动迁移 User 表
+	database.DB.AutoMigrate(&models.User{})
 
 	// 设置 Gin 模式
 	gin.SetMode(gin.ReleaseMode)
@@ -33,8 +38,25 @@ func main() {
 	// 路由
 	api := r.Group("/api")
 	{
+		// 文章
 		api.GET("/articles", handlers.GetArticles)
 		api.GET("/articles/:id", handlers.GetArticle)
+
+		// 认证
+		api.GET("/auth/login-url", handlers.GetLoginURL)
+		api.GET("/auth/callback", handlers.GithubCallback)
+
+		// 用户（需登录）
+		auth := api.Group("").Use(middleware.AuthRequired())
+		{
+			auth.GET("/auth/me", handlers.GetCurrentUser)
+		}
+
+		// 管理员
+		admin := api.Group("").Use(middleware.AuthRequired(), middleware.AdminRequired())
+		{
+			admin.POST("/admin/grant", handlers.GrantAdmin)
+		}
 	}
 
 	log.Printf("Server starting on port %s", cfg.Port)
