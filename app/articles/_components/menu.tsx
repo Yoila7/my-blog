@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import type { Heading } from '../_lib/content';
+import type { Heading } from '../_lib/api';
 
 interface TocMenuProps {
   headings: Heading[];

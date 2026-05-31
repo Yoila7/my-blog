@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# go binaries
+/server/blog-server.exe
+/server/blog.db
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

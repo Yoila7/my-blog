@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import articlesData from '@/data/articles.json';
 
 const STORAGE_KEY = 'articles-sidebar-expanded';
 
@@ -23,10 +22,10 @@ interface Article {
 
 interface ArticlesSidebarProps {
   currentId?: string;
+  articles: Article[];
 }
 
-export default function ArticlesSidebar({ currentId }: ArticlesSidebarProps) {
-  const articles: Article[] = articlesData;
+export default function ArticlesSidebar({ currentId, articles }: ArticlesSidebarProps) {
 
   // 所有 x-0 章节
   const categories = articles.filter((a) => /^\d+-0$/.test(a.id));
