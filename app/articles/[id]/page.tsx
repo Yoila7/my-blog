@@ -39,7 +39,7 @@ export default async function ArticlePage({
           </time>
           <div className="article-content" dangerouslySetInnerHTML={{ __html: content }} />
         </article>
-        <Comments />
+        <Comments articleId={id} />
         <div style={{ paddingBottom: '60vh' }} />
       </div>
       <TocMenu headings={headings} />

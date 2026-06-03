@@ -10,9 +10,10 @@ import (
 )
 
 type Claims struct {
-	UserID   uint   `json:"user_id"`
-	Username string `json:"username"`
-	IsAdmin  bool   `json:"is_admin"`
+	UserID    uint   `json:"user_id"`
+	Username  string `json:"username"`
+	IsAdmin   bool   `json:"is_admin"`
+	AvatarURL string `json:"avatar_url"`
 	jwt.RegisteredClaims
 }
 
@@ -40,6 +41,7 @@ func AuthRequired() gin.HandlerFunc {
 		c.Set("user_id", claims.UserID)
 		c.Set("username", claims.Username)
 		c.Set("is_admin", claims.IsAdmin)
+		c.Set("avatar_url", claims.AvatarURL)
 		c.Next()
 	}
 }

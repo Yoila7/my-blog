@@ -175,9 +175,10 @@ func fetchGitHubUser(token string) (*githubUser, error) {
 
 func generateJWT(user models.User) (string, error) {
 	claims := middleware.Claims{
-		UserID:   user.ID,
-		Username: user.Username,
-		IsAdmin:  user.IsAdmin,
+		UserID:    user.ID,
+		Username:  user.Username,
+		IsAdmin:   user.IsAdmin,
+		AvatarURL: user.AvatarURL,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

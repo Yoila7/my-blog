@@ -19,8 +19,8 @@ func main() {
 	// 初始化数据库
 	database.Init(cfg.DBPath)
 
-	// 自动迁移 User 表
-	database.DB.AutoMigrate(&models.User{})
+	// 自动迁移表
+	database.DB.AutoMigrate(&models.User{}, &models.Comment{})
 
 	// 设置 Gin 模式
 	gin.SetMode(gin.ReleaseMode)
@@ -43,6 +43,9 @@ func main() {
 		api.GET("/articles/:id", handlers.GetArticle)
 
 		// 认证
+		api.GET("/articles/:id/comments", handlers.GetComments)
+
+		// 认证
 		api.GET("/auth/login-url", handlers.GetLoginURL)
 		api.GET("/auth/callback", handlers.GithubCallback)
 
@@ -50,6 +53,8 @@ func main() {
 		auth := api.Group("").Use(middleware.AuthRequired())
 		{
 			auth.GET("/auth/me", handlers.GetCurrentUser)
+			auth.POST("/comments", handlers.CreateComment)
+			auth.DELETE("/comments/:id", handlers.DeleteComment)
 		}
 
 		// 管理员

@@ -128,3 +128,7 @@ body {
 .journal-list ol > li p {
   margin-bottom: 0;
 }
+
+.comment-username:hover {
+  color: #5b9bd5;
+}

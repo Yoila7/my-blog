@@ -27,7 +27,9 @@ func main() {
 		log.Fatalf("Failed to open database: %v", err)
 	}
 
-	if err := db.AutoMigrate(&models.Article{}); err != nil {
+	// 重建 User 表（修复 GitHubID 列名错误）
+	db.Exec("DROP TABLE IF EXISTS users")
+	if err := db.AutoMigrate(&models.Article{}, &models.User{}); err != nil {
 		log.Fatalf("Failed to migrate: %v", err)
 	}
 
