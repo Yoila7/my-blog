@@ -55,15 +55,20 @@ func Load() *Config {
 	return cfg
 }
 
-// deriveFrontendURL 从后端地址推导前端地址（端口改为3000）
+// deriveFrontendURL 从后端地址推导前端地址
+// 如果 SERVER_URL 带端口号（如 :8080），则替换为 :3000
+// 如果不带端口号（Docker nginx 代理），则直接返回
 func deriveFrontendURL(serverURL string) string {
 	u, err := url.Parse(serverURL)
 	if err != nil {
 		return "http://localhost:3000"
 	}
-	// 只取 hostname，配上 3000 端口
-	hostname := u.Hostname()
-	return fmt.Sprintf("%s://%s:3000", u.Scheme, hostname)
+	if u.Port() != "" {
+		// 显式指定了端口，替换为 3000
+		return fmt.Sprintf("%s://%s:3000", u.Scheme, u.Hostname())
+	}
+	// 无端口（使用默认 80/443），说明前面有 nginx 代理，直接返回
+	return serverURL
 }
 
 // buildCORSOrigins 生成 CORS 白名单

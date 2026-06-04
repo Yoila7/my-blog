@@ -1,0 +1,25 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+!CLAUDE.md
+
+# Go 二进制（每次构建重新编译）
+server/blog-server.exe
+server/blog-server
+
+# 数据文件（通过 volume 挂载，不打包进镜像）
+data/
+server/data/
+
+# IDE 配置
+.vscode
+.idea
+
+# 环境配置（通过 volume 挂载运行时注入）
+server/.env
+
+# 临时文件
+*.log
+tmp/

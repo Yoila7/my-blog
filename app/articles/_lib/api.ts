@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+// SSR API 地址：Docker 中用 API_URL=http://backend:8080，本地开发自动 fallback 到 localhost
+const API_BASE = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export interface Heading {
   id: string;

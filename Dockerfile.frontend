@@ -1,0 +1,40 @@
+# === 构建阶段 ===
+FROM node:22-alpine AS builder
+
+WORKDIR /build
+
+# 先复制依赖文件，利用 Docker 层缓存
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# 复制源码
+COPY . .
+
+# 设置构建时环境变量
+# NEXT_PUBLIC_API_URL='' 表示浏览器端 API 请求走同源（由 nginx 代理到后端）
+ARG NEXT_PUBLIC_API_URL=
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+# API_URL 供服务端（SSR）使用，走 Docker 内部网络
+ARG API_URL=http://backend:8080
+ENV API_URL=${API_URL}
+
+RUN npm run build
+
+# === 运行阶段 ===
+FROM node:22-alpine
+
+WORKDIR /app
+
+# SSR 时通过 Docker 内网访问后端
+ENV API_URL=http://backend:8080
+
+# 只复制运行时需要的文件
+COPY --from=builder /build/package.json /build/package-lock.json ./
+COPY --from=builder /build/.next ./.next
+COPY --from=builder /build/public ./public
+COPY --from=builder /build/node_modules ./node_modules
+
+EXPOSE 3000
+
+CMD ["npx", "next", "start", "-H", "0.0.0.0"]
