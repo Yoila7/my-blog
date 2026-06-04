@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+// 根据当前浏览器地址动态获取 API 地址，使从 IP 访问时也能正确请求 API
+function getApiBase(): string {
+  if (typeof window !== 'undefined') {
+    return `${window.location.protocol}//${window.location.hostname}:8080`;
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+}
 
 interface CommentData {
   id: number;
@@ -27,7 +33,7 @@ export default function Comments({ articleId }: { articleId: string }) {
   // 加载评论
   const loadComments = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/articles/${articleId}/comments`);
+      const res = await fetch(`${getApiBase()}/api/articles/${articleId}/comments`);
       if (res.ok) setComments(await res.json());
     } catch {}
   }, [articleId]);
@@ -64,7 +70,7 @@ export default function Comments({ articleId }: { articleId: string }) {
 
   const fetchUser = async (t: string) => {
     try {
-      const res = await fetch(`${API_BASE}/api/auth/me`, {
+      const res = await fetch(`${getApiBase()}/api/auth/me`, {
         headers: { Authorization: `Bearer ${t}` },
       });
       if (res.ok) {
@@ -84,7 +90,7 @@ export default function Comments({ articleId }: { articleId: string }) {
   const handleLogin = async () => {
     try {
       localStorage.setItem('returnTo', window.location.pathname);
-      const res = await fetch(`${API_BASE}/api/auth/login-url`);
+      const res = await fetch(`${getApiBase()}/api/auth/login-url`);
       const data = await res.json();
       window.location.href = data.url;
     } catch (err) {
@@ -103,7 +109,7 @@ export default function Comments({ articleId }: { articleId: string }) {
   const handleDelete = async (commentId: number) => {
     if (!token) return;
     try {
-      const res = await fetch(`${API_BASE}/api/comments/${commentId}`, {
+      const res = await fetch(`${getApiBase()}/api/comments/${commentId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -114,7 +120,7 @@ export default function Comments({ articleId }: { articleId: string }) {
   const handleSubmit = async () => {
     if (!token || !text.trim()) return;
     try {
-      const res = await fetch(`${API_BASE}/api/comments`, {
+      const res = await fetch(`${getApiBase()}/api/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
