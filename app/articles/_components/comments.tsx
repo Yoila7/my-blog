@@ -26,6 +26,7 @@ interface CommentData {
   username: string;
   avatar_url: string;
   content: string;
+  likes: number;
   created_at: string;
 }
 
@@ -37,6 +38,7 @@ export default function Comments({ articleId }: { articleId: string }) {
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState('');
   const [comments, setComments] = useState<CommentData[]>([]);
+  const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
   const menuRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -54,6 +56,7 @@ export default function Comments({ articleId }: { articleId: string }) {
       setToken(stored);
       setLoading(true);
       fetchUser(stored).finally(() => setLoading(false));
+      loadMyLikesWithToken(stored);
     }
     loadComments();
   }, [loadComments]);
@@ -114,6 +117,57 @@ export default function Comments({ articleId }: { articleId: string }) {
     setUsername(null);
     setAvatarUrl(null);
     setMenuOpen(false);
+  };
+
+  // 加载当前用户点赞过的评论 ID
+  const loadMyLikesWithToken = async (t: string) => {
+    try {
+      const res = await fetch(`${getApiBase()}/api/auth/likes`, {
+        headers: { Authorization: `Bearer ${t}` },
+      });
+      if (res.ok) {
+        const ids: number[] = await res.json();
+        setLikedIds(new Set(ids));
+      }
+    } catch {}
+  };
+
+  // 点赞/取消点赞
+  const handleLike = async (commentId: number) => {
+    if (!token) return;
+    const wasLiked = likedIds.has(commentId);
+    // 乐观更新
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (wasLiked) next.delete(commentId);
+      else next.add(commentId);
+      return next;
+    });
+    setComments((prev) =>
+      prev.map((c) =>
+        c.id === commentId ? { ...c, likes: c.likes + (wasLiked ? -1 : 1) } : c
+      )
+    );
+    try {
+      const res = await fetch(`${getApiBase()}/api/comments/${commentId}/like`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('failed');
+    } catch {
+      // 回滚
+      setLikedIds((prev) => {
+        const next = new Set(prev);
+        if (wasLiked) next.add(commentId);
+        else next.delete(commentId);
+        return next;
+      });
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId ? { ...c, likes: c.likes + (wasLiked ? 1 : -1) } : c
+        )
+      );
+    }
   };
 
   const handleDelete = async (commentId: number) => {
@@ -224,6 +278,40 @@ export default function Comments({ articleId }: { articleId: string }) {
                 </a>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>{formatDate(c.created_at)}</span>
+                  {/* 点赞按钮 */}
+                  <button
+                    onClick={() => handleLike(c.id)}
+                    title={likedIds.has(c.id) ? '取消点赞' : '点赞'}
+                    style={{
+                      position: 'relative',
+                      width: '24px', height: '24px', padding: 0,
+                      border: 'none', background: 'none',
+                      cursor: token ? 'pointer' : 'default',
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    <img
+                      src="/like.svg"
+                      alt="like"
+                      style={{
+                        width: '16px', height: '16px',
+                        filter: likedIds.has(c.id)
+                          ? 'invert(17%) sepia(95%) saturate(6934%) hue-rotate(358deg) brightness(100%) contrast(117%)'
+                          : 'none',
+                        opacity: likedIds.has(c.id) ? 1 : 0.4,
+                      }}
+                    />
+                    {c.likes > 0 && (
+                      <span style={{
+                        position: 'absolute', bottom: '-2px', right: '-4px',
+                        fontSize: '0.55rem', lineHeight: 1,
+                        color: likedIds.has(c.id) ? '#e0245e' : 'inherit',
+                        opacity: likedIds.has(c.id) ? 1 : 0.5,
+                      }}>
+                        {c.likes}
+                      </span>
+                    )}
+                  </button>
                   <span style={{ width: '24px', height: '24px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                     {username && username === c.username ? (
                       <button

@@ -20,7 +20,7 @@ func main() {
 	database.Init(cfg.DBPath)
 
 	// 自动迁移表
-	database.DB.AutoMigrate(&models.User{}, &models.Comment{})
+	database.DB.AutoMigrate(&models.User{}, &models.Comment{}, &models.CommentLike{})
 
 	// 设置 Gin 模式
 	gin.SetMode(gin.ReleaseMode)
@@ -53,8 +53,10 @@ func main() {
 		auth := api.Group("").Use(middleware.AuthRequired())
 		{
 			auth.GET("/auth/me", handlers.GetCurrentUser)
+			auth.GET("/auth/likes", handlers.GetMyLikes)
 			auth.POST("/comments", handlers.CreateComment)
 			auth.DELETE("/comments/:id", handlers.DeleteComment)
+			auth.POST("/comments/:id/like", handlers.ToggleLike)
 		}
 
 		// 管理员

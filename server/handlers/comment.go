@@ -82,3 +82,47 @@ func DeleteComment(c *gin.Context) {
 	database.DB.Delete(&comment)
 	c.JSON(http.StatusOK, gin.H{"message": "已删除"})
 }
+
+// ToggleLike 点赞/取消点赞
+func ToggleLike(c *gin.Context) {
+	id := c.Param("id")
+	username, _ := c.Get("username")
+
+	var comment models.Comment
+	if err := database.DB.First(&comment, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "评论不存在"})
+		return
+	}
+
+	// 查找是否已点赞
+	var existing models.CommentLike
+	result := database.DB.Where("comment_id = ? AND username = ?", comment.ID, username.(string)).First(&existing)
+
+	if result.Error == nil {
+		// 已点赞 → 取消
+		database.DB.Delete(&existing)
+		database.DB.Model(&comment).UpdateColumn("likes", comment.Likes-1)
+		c.JSON(http.StatusOK, gin.H{"liked": false, "likes": comment.Likes - 1})
+	} else {
+		// 未点赞 → 点赞
+		like := models.CommentLike{
+			CommentID: comment.ID,
+			Username:  username.(string),
+		}
+		database.DB.Create(&like)
+		database.DB.Model(&comment).UpdateColumn("likes", comment.Likes+1)
+		c.JSON(http.StatusOK, gin.H{"liked": true, "likes": comment.Likes + 1})
+	}
+}
+
+// GetMyLikes 获取当前用户点赞过的评论 ID 列表
+func GetMyLikes(c *gin.Context) {
+	username, _ := c.Get("username")
+	var likes []models.CommentLike
+	database.DB.Where("username = ?", username.(string)).Find(&likes)
+	ids := make([]uint, len(likes))
+	for i, l := range likes {
+		ids[i] = l.CommentID
+	}
+	c.JSON(http.StatusOK, ids)
+}
