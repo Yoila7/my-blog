@@ -19,9 +19,7 @@ RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
 COPY --from=builder /build/blog-server .
 
-# .env 在运行时通过 volume 挂载，或从构建上下文复制
-# 默认复制一份，实际部署时可通过 volume 覆盖
-COPY .env .env
+# .env 由 docker-compose volume 挂载或环境变量提供，不打包进镜像
 
 EXPOSE 8080
 
