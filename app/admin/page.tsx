@@ -63,6 +63,9 @@ export default function AdminPage() {
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
   const [editDate, setEditDate] = useState("");
+  // 编辑评论
+  const [editingComment, setEditingComment] = useState<CommentData | null>(null);
+  const [editCommentContent, setEditCommentContent] = useState("");
 
   // 初始化
   useEffect(() => {
@@ -99,34 +102,29 @@ export default function AdminPage() {
       .finally(() => setChecking(false));
   }, []);
 
-  const loadData = useCallback(
-    async (t: TabKey) => {
-      if (!token) return;
-      setLoading(true);
-      const endpoints: Record<TabKey, string> = {
-        articles: "/api/admin/articles",
-        users: "/api/admin/users",
-        comments: "/api/admin/comments",
-      };
-      try {
-        const res = await fetch(`${getApiBase()}${endpoints[t]}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (t === "articles") setArticles(data);
-          if (t === "users") setUsers(data);
-          if (t === "comments") setComments(data);
-        }
-      } catch {}
-      setLoading(false);
-    },
-    [token]
-  );
+  // 加载全部数据（页面初始化时一次性拉取）
+  const loadAllData = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    const endpoints: Record<TabKey, string> = {
+      articles: "/api/admin/articles",
+      users: "/api/admin/users",
+      comments: "/api/admin/comments",
+    };
+    const [ar, ur, cr] = await Promise.all([
+      fetch(`${getApiBase()}${endpoints.articles}`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.ok ? r.json() : []),
+      fetch(`${getApiBase()}${endpoints.users}`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.ok ? r.json() : []),
+      fetch(`${getApiBase()}${endpoints.comments}`, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.ok ? r.json() : []),
+    ]);
+    setArticles(ar);
+    setUsers(ur);
+    setComments(cr);
+    setLoading(false);
+  }, [token]);
 
   useEffect(() => {
-    if (isAdmin) loadData(tab);
-  }, [tab, isAdmin, loadData]);
+    if (isAdmin) loadAllData();
+  }, [isAdmin, loadAllData]);
 
   // 删除
   const handleDelete = async (type: TabKey, id: string | number) => {
@@ -136,7 +134,7 @@ export default function AdminPage() {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (res.ok) loadData(tab);
+    if (res.ok) loadAllData();
   };
 
   // 保存文章编辑
@@ -159,7 +157,7 @@ export default function AdminPage() {
     );
     if (res.ok) {
       setEditingArticle(null);
-      loadData("articles");
+      loadAllData();
     }
   };
 
@@ -168,6 +166,31 @@ export default function AdminPage() {
     setEditTitle(a.title);
     setEditContent(a.content);
     setEditDate(a.date);
+  };
+
+  // 保存评论编辑
+  const handleSaveComment = async () => {
+    if (!token || !editingComment) return;
+    const res = await fetch(
+      `${getApiBase()}/api/admin/comments/${editingComment.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content: editCommentContent }),
+      }
+    );
+    if (res.ok) {
+      setEditingComment(null);
+      loadAllData();
+    }
+  };
+
+  const startEditComment = (c: CommentData) => {
+    setEditingComment(c);
+    setEditCommentContent(c.content);
   };
 
   // 登录
@@ -402,6 +425,9 @@ export default function AdminPage() {
                     <td style={td}>{c.likes}</td>
                     <td style={td}>{c.created_at?.split("T")[0]}</td>
                     <td style={td}>
+                      <button onClick={() => startEditComment(c)} style={btnSm}>
+                        编辑
+                      </button>
                       <button
                         onClick={() => handleDelete("comments", c.id)}
                         style={{ ...btnSm, color: "#e0245e" }}
@@ -502,6 +528,45 @@ export default function AdminPage() {
               >
                 保存
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 编辑评论弹窗 */}
+      {editingComment && (
+        <div
+          style={{
+            position: "fixed", inset: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex", justifyContent: "center", alignItems: "center",
+            zIndex: 100,
+          }}
+          onClick={() => setEditingComment(null)}
+        >
+          <div
+            style={{
+              background: "var(--bg)",
+              border: "1px solid var(--border-color)",
+              borderRadius: "12px", padding: "1.5rem",
+              width: "90%", maxWidth: "600px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ marginTop: 0 }}>
+              编辑评论 #{editingComment.id} ({editingComment.username})
+            </h3>
+            <label style={labelStyle}>
+              内容
+              <textarea
+                style={{ ...inputStyle, minHeight: "150px" }}
+                value={editCommentContent}
+                onChange={(e) => setEditCommentContent(e.target.value)}
+              />
+            </label>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "1rem" }}>
+              <button onClick={() => setEditingComment(null)} style={{ ...btnSm, background: "none", color: "var(--text)", border: "1px solid var(--border-color)", borderRadius: "6px", padding: "6px 16px" }}>取消</button>
+              <button onClick={handleSaveComment} style={{ ...btnSm, background: "var(--text)", color: "var(--bg)", border: "none", borderRadius: "6px", padding: "6px 16px" }}>保存</button>
             </div>
           </div>
         </div>

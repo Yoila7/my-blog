@@ -70,6 +70,7 @@ func main() {
 			admin.DELETE("/admin/users/:id", handlers.AdminDeleteUser)
 			admin.GET("/admin/comments", handlers.AdminGetComments)
 			admin.DELETE("/admin/comments/:id", handlers.AdminDeleteComment)
+				admin.PUT("/admin/comments/:id", handlers.AdminUpdateComment)
 		}
 	}
 

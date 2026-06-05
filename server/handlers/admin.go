@@ -91,3 +91,28 @@ func AdminDeleteComment(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "已删除"})
 }
+
+// AdminUpdateComment 编辑任意评论（管理员）
+func AdminUpdateComment(c *gin.Context) {
+	id := c.Param("id")
+	var comment models.Comment
+	if err := database.DB.First(&comment, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "评论不存在"})
+		return
+	}
+	var req map[string]interface{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求格式错误"})
+		return
+	}
+	updates := map[string]interface{}{}
+	if v, ok := req["content"]; ok {
+		updates["content"] = v
+	}
+	if len(updates) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "没有可更新的字段"})
+		return
+	}
+	database.DB.Model(&comment).Updates(updates)
+	c.JSON(http.StatusOK, comment)
+}
