@@ -63,6 +63,13 @@ func main() {
 		admin := api.Group("").Use(middleware.AuthRequired(), middleware.AdminRequired())
 		{
 			admin.POST("/admin/grant", handlers.GrantAdmin)
+			admin.GET("/admin/articles", handlers.AdminGetArticles)
+			admin.PUT("/admin/articles/:id", handlers.AdminUpdateArticle)
+			admin.DELETE("/admin/articles/:id", handlers.AdminDeleteArticle)
+			admin.GET("/admin/users", handlers.AdminGetUsers)
+			admin.DELETE("/admin/users/:id", handlers.AdminDeleteUser)
+			admin.GET("/admin/comments", handlers.AdminGetComments)
+			admin.DELETE("/admin/comments/:id", handlers.AdminDeleteComment)
 		}
 	}
 
