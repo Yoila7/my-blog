@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 
+// 根据运行环境获取 API 地址
 function getApiBase(): string {
+  const configured =
+    typeof process !== "undefined" &&
+    process.env.NEXT_PUBLIC_API_URL !== undefined
+      ? process.env.NEXT_PUBLIC_API_URL
+      : undefined;
+  if (configured !== undefined) return configured;
   if (typeof window !== "undefined") {
     return `${window.location.protocol}//${window.location.hostname}:8080`;
   }
@@ -68,8 +75,18 @@ export default function AdminPage() {
     fetch(`${getApiBase()}/api/auth/me`, {
       headers: { Authorization: `Bearer ${stored}` },
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) {
+          // token 过期才清除
+          localStorage.removeItem("token");
+          alert("登录已过期，请重新登录");
+          window.location.href = "/";
+          return null;
+        }
+        return r.json();
+      })
       .then((user) => {
+        if (!user) return;
         setUsername(user.username);
         setAvatarUrl(user.avatar_url);
         if (!user.is_admin) {
@@ -78,11 +95,6 @@ export default function AdminPage() {
         } else {
           setIsAdmin(true);
         }
-      })
-      .catch(() => {
-        localStorage.removeItem("token");
-        alert("该账号无权访问，即将返回主页");
-        window.location.href = "/";
       })
       .finally(() => setChecking(false));
   }, []);
