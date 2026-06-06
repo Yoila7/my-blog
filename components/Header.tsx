@@ -85,18 +85,26 @@ export default function Header() {
   };
 
   const handleLogin = async () => {
-    localStorage.setItem('returnTo', window.location.pathname);
-    const res = await fetch(`${getApiBase()}/api/auth/login-url`);
-    const data = await res.json();
-    window.location.href = data.url;
+    try {
+      localStorage.setItem('returnTo', window.location.pathname);
+      const res = await fetch(`${getApiBase()}/api/auth/login-url`);
+      if (!res.ok) throw new Error('获取登录链接失败');
+      const data = await res.json();
+      window.location.href = data.url;
+    } catch (err) {
+      console.error('登录失败', err);
+      alert('获取登录链接失败，请检查网络连接');
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('returnTo');
     setToken(null);
     setUsername(null);
     setAvatarUrl(null);
     setMenuOpen(false);
+    window.location.href = '/';
   };
 
   return (

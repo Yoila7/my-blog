@@ -572,8 +572,23 @@ export default function AdminPage() {
               编辑评论 #{editingComment.id} ({editingComment.username})
             </h3>
             {commentLikeUsers.length > 0 && (
-              <div style={{ marginBottom: "0.75rem", fontSize: "0.8rem", opacity: 0.7 }}>
-                点赞用户：{commentLikeUsers.join("、")}
+              <div style={{ marginBottom: "0.75rem" }}>
+                <span style={{ fontSize: "0.8rem", opacity: 0.7 }}>点赞用户（{commentLikeUsers.length}）：</span>
+                <div style={{
+                  marginTop: "4px",
+                  border: "1px solid var(--border-color)",
+                  borderRadius: "6px",
+                  padding: "8px 10px",
+                  maxHeight: "120px",
+                  overflow: "auto",
+                  fontSize: "0.85rem",
+                  background: "var(--bg)",
+                  color: "var(--text)",
+                }}>
+                  {commentLikeUsers.map((user) => (
+                    <div key={user}>{user}</div>
+                  ))}
+                </div>
               </div>
             )}
             <label style={labelStyle}>
