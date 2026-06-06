@@ -53,7 +53,7 @@ export default function Header() {
         </Link>
 
         <div style={styles.topRight}>
-          <button onClick={toggleTheme} style={styles.iconBtn} title={isDark ? '深色模式' : '浅色模式'}>
+          <button onClick={toggleTheme} style={styles.iconBtn} title={isDark ? '切换到浅色模式' : '切换到深色模式'}>
             {isDark ? (
               <img src={moonIcon.src} alt="深色模式" width={24} height={24} />
             ) : (

@@ -6,6 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -13,14 +14,20 @@ func main() {
 	frontend := getEnv("FRONTEND", "http://127.0.0.1:3000")
 	backend := getEnv("BACKEND", "http://127.0.0.1:8080")
 
-	frontendURL, _ := url.Parse(frontend)
-	backendURL, _ := url.Parse(backend)
+	frontendURL, err := url.Parse(frontend)
+	if err != nil {
+		log.Fatalf("无效的 FRONTEND URL %q: %v", frontend, err)
+	}
+	backendURL, err := url.Parse(backend)
+	if err != nil {
+		log.Fatalf("无效的 BACKEND URL %q: %v", backend, err)
+	}
 
 	frontendProxy := httputil.NewSingleHostReverseProxy(frontendURL)
 	backendProxy := httputil.NewSingleHostReverseProxy(backendURL)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if len(r.URL.Path) >= 5 && r.URL.Path[:5] == "/api/" {
+		if strings.HasPrefix(r.URL.Path, "/api/") {
 			backendProxy.ServeHTTP(w, r)
 		} else {
 			frontendProxy.ServeHTTP(w, r)

@@ -45,6 +45,7 @@ func AdminUpdateArticle(c *gin.Context) {
 		return
 	}
 	database.DB.Model(&article).Updates(updates)
+	database.DB.First(&article, "id = ?", id) // 重新查询获取最新数据
 	c.JSON(http.StatusOK, article)
 }
 
@@ -114,5 +115,6 @@ func AdminUpdateComment(c *gin.Context) {
 		return
 	}
 	database.DB.Model(&comment).Updates(updates)
+	database.DB.First(&comment, id) // 重新查询获取最新数据
 	c.JSON(http.StatusOK, comment)
 }

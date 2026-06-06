@@ -6,6 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"gorm.io/gorm"
+
 	"github.com/Yoila7/myGoProject/database"
 	"github.com/Yoila7/myGoProject/models"
 )
@@ -99,18 +101,22 @@ func ToggleLike(c *gin.Context) {
 	result := database.DB.Where("comment_id = ? AND username = ?", comment.ID, username.(string)).First(&existing)
 
 	if result.Error == nil {
-		// 已点赞 → 取消
+		// 已点赞 → 取消（原子操作防止竞态）
 		database.DB.Delete(&existing)
-		database.DB.Model(&comment).UpdateColumn("likes", comment.Likes-1)
+		database.DB.Model(&comment).UpdateColumn("likes", gorm.Expr("likes - 1"))
 		c.JSON(http.StatusOK, gin.H{"liked": false, "likes": comment.Likes - 1})
 	} else {
-		// 未点赞 → 点赞
+		// 未点赞 → 点赞（原子操作防止竞态）
 		like := models.CommentLike{
 			CommentID: comment.ID,
 			Username:  username.(string),
 		}
-		database.DB.Create(&like)
-		database.DB.Model(&comment).UpdateColumn("likes", comment.Likes+1)
+		if err := database.DB.Create(&like).Error; err != nil {
+			// 可能是并发导致的重复点赞（唯一约束冲突）
+			c.JSON(http.StatusOK, gin.H{"liked": true, "likes": comment.Likes})
+			return
+		}
+		database.DB.Model(&comment).UpdateColumn("likes", gorm.Expr("likes + 1"))
 		c.JSON(http.StatusOK, gin.H{"liked": true, "likes": comment.Likes + 1})
 	}
 }

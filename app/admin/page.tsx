@@ -1,20 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-
-// 根据运行环境获取 API 地址
-function getApiBase(): string {
-  const configured =
-    typeof process !== "undefined" &&
-    process.env.NEXT_PUBLIC_API_URL !== undefined
-      ? process.env.NEXT_PUBLIC_API_URL
-      : undefined;
-  if (configured !== undefined) return configured;
-  if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:8080`;
-  }
-  return "http://localhost:8080";
-}
+import { getApiBase } from "@/app/_lib/api-base";
 
 interface ArticleData {
   id: string;

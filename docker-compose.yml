@@ -19,6 +19,8 @@ services:
       - SERVER_URL=http://10.196.231.244
       - FRONTEND_URL=http://10.196.231.244
       - HTTPS_PROXY=http://host.docker.internal:7890
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   frontend:
     build:

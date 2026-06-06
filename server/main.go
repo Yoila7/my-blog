@@ -16,18 +16,16 @@ import (
 func main() {
 	cfg := config.Load()
 
-	// 初始化数据库
+	// 初始化数据库并自动迁移
 	database.Init(cfg.DBPath)
-
-	// 自动迁移表
-	database.DB.AutoMigrate(&models.User{}, &models.Comment{}, &models.CommentLike{})
+	database.DB.AutoMigrate(&models.Article{}, &models.User{}, &models.Comment{}, &models.CommentLike{})
 
 	// 设置 Gin 模式
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
 
-	// CORS 配置（允许 Next.js 前端跨域访问）
+	// CORS 配置（来源由 config 自动推导）
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     cfg.CORSOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -38,18 +36,18 @@ func main() {
 	// 路由
 	api := r.Group("/api")
 	{
-		// 文章
+		// 文章（公开）
 		api.GET("/articles", handlers.GetArticles)
 		api.GET("/articles/:id", handlers.GetArticle)
 
-		// 认证
+		// 评论（公开）
 		api.GET("/articles/:id/comments", handlers.GetComments)
 
-		// 认证
+		// OAuth 认证（公开）
 		api.GET("/auth/login-url", handlers.GetLoginURL)
 		api.GET("/auth/callback", handlers.GithubCallback)
 
-		// 用户（需登录）
+		// 用户接口（需登录）
 		auth := api.Group("").Use(middleware.AuthRequired())
 		{
 			auth.GET("/auth/me", handlers.GetCurrentUser)
@@ -59,7 +57,7 @@ func main() {
 			auth.POST("/comments/:id/like", handlers.ToggleLike)
 		}
 
-		// 管理员
+		// 管理接口（需管理员权限）
 		admin := api.Group("").Use(middleware.AuthRequired(), middleware.AdminRequired())
 		{
 			admin.POST("/admin/grant", handlers.GrantAdmin)
@@ -70,7 +68,7 @@ func main() {
 			admin.DELETE("/admin/users/:id", handlers.AdminDeleteUser)
 			admin.GET("/admin/comments", handlers.AdminGetComments)
 			admin.DELETE("/admin/comments/:id", handlers.AdminDeleteComment)
-				admin.PUT("/admin/comments/:id", handlers.AdminUpdateComment)
+			admin.PUT("/admin/comments/:id", handlers.AdminUpdateComment)
 		}
 	}
 

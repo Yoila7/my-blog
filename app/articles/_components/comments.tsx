@@ -1,24 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-
-// 根据运行环境获取 API 地址：
-// - 设了 NEXT_PUBLIC_API_URL（Docker 中为空串=同源）：直接用
-// - 未设置（本地开发）：动态取浏览器地址 + :8080
-function getApiBase(): string {
-  const configured =
-    typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL !== undefined
-      ? process.env.NEXT_PUBLIC_API_URL
-      : undefined;
-
-  if (configured !== undefined) {
-    return configured; // 空串表示同源，非空表示自定义地址
-  }
-  if (typeof window !== 'undefined') {
-    return `${window.location.protocol}//${window.location.hostname}:8080`;
-  }
-  return 'http://localhost:8080'; // SSR 回退
-}
+import { getApiBase } from '@/app/_lib/api-base';
 
 interface CommentData {
   id: number;
@@ -292,7 +275,7 @@ export default function Comments({ articleId }: { articleId: string }) {
                   >
                     <img
                       src="/like.svg"
-                      alt="like"
+                      alt="点赞"
                       style={{
                         width: '16px', height: '16px',
                         filter: likedIds.has(c.id)
