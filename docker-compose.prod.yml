@@ -1,0 +1,40 @@
+# 云服务器生产部署 —— 直接拉取 ghcr.io 镜像，无需本地构建
+#
+# 使用方式：
+#   1. 创建 server/.env 并填入配置
+#   2. mkdir -p data
+#   3. docker compose -f docker-compose.prod.yml up -d
+
+services:
+  backend:
+    image: ghcr.io/yoila7/my-blog-backend:latest
+    container_name: blog-backend
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./server/.env:/app/.env:ro
+    environment:
+      - DB_PATH=/app/data/blog.db
+      - SERVER_URL=http://替换为你的服务器IP
+      - FRONTEND_URL=http://替换为你的服务器IP
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    image: ghcr.io/yoila7/my-blog-frontend:latest
+    container_name: blog-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: blog-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
