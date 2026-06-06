@@ -53,6 +53,7 @@ export default function AdminPage() {
   // 编辑评论
   const [editingComment, setEditingComment] = useState<CommentData | null>(null);
   const [editCommentContent, setEditCommentContent] = useState("");
+  const [commentLikeUsers, setCommentLikeUsers] = useState<string[]>([]);
 
   // 初始化
   useEffect(() => {
@@ -175,17 +176,33 @@ export default function AdminPage() {
     }
   };
 
-  const startEditComment = (c: CommentData) => {
-    setEditingComment(c);
-    setEditCommentContent(c.content);
+  // 切换用户管理员权限
+  const handleToggleAdmin = async (u: UserData) => {
+    if (!token) return;
+    try {
+      await fetch(`${getApiBase()}/api/admin/users/${u.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ is_admin: !u.is_admin }),
+      });
+      loadAllData();
+    } catch {}
   };
 
-  // 登录
-  const handleLogin = async () => {
-    localStorage.setItem("returnTo", "/admin");
-    const res = await fetch(`${getApiBase()}/api/auth/login-url`);
-    const data = await res.json();
-    window.location.href = data.url;
+  const startEditComment = async (c: CommentData) => {
+    setEditingComment(c);
+    setEditCommentContent(c.content);
+    // 获取点赞用户列表
+    try {
+      const res = await fetch(
+        `${getApiBase()}/api/admin/comments/${c.id}/likes`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.ok) setCommentLikeUsers(await res.json());
+      else setCommentLikeUsers([]);
+    } catch {
+      setCommentLikeUsers([]);
+    }
   };
 
   if (checking) {
@@ -205,22 +222,12 @@ export default function AdminPage() {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "60vh",
+          color: "var(--text)",
+          opacity: 0.5,
+          fontSize: "1rem",
         }}
       >
-        <button
-          onClick={handleLogin}
-          style={{
-            padding: "12px 32px",
-            border: "1px solid var(--border-color)",
-            borderRadius: "8px",
-            background: "none",
-            color: "var(--text)",
-            cursor: "pointer",
-            fontSize: "1rem",
-          }}
-        >
-          登录
-        </button>
+        请先登录验证权限
       </div>
     );
   }
@@ -390,7 +397,23 @@ export default function AdminPage() {
                     <td style={td}>{u.id}</td>
                     <td style={td}>{u.username}</td>
                     <td style={td}>{u.github_id}</td>
-                    <td style={td}>{u.is_admin ? "是" : "否"}</td>
+                    <td style={td}>
+                      {username === "Yoila7" && u.username !== "Yoila7" ? (
+                        <button
+                          onClick={() => handleToggleAdmin(u)}
+                          style={{
+                            ...btnSm,
+                            color: u.is_admin ? "#e0245e" : "inherit",
+                          }}
+                        >
+                          {u.is_admin ? "是 (取消)" : "否 (设为管理)"}
+                        </button>
+                      ) : (
+                        <span style={{ fontSize: "0.8rem" }}>
+                          {u.is_admin ? "是" : "否"}
+                        </span>
+                      )}
+                    </td>
                     <td style={td}>{u.created_at?.split("T")[0]}</td>
                     <td style={td}>
                       <button
@@ -403,27 +426,32 @@ export default function AdminPage() {
                   </tr>
                 ))}
               {tab === "comments" &&
-                comments.map((c) => (
-                  <tr key={c.id} style={trStyle}>
-                    <td style={td}>{c.id}</td>
-                    <td style={td}>{c.article_id}</td>
-                    <td style={td}>{c.username}</td>
-                    <td style={{ ...td, maxWidth: "300px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.content}</td>
-                    <td style={td}>{c.likes}</td>
-                    <td style={td}>{c.created_at?.split("T")[0]}</td>
-                    <td style={td}>
-                      <button onClick={() => startEditComment(c)} style={btnSm}>
-                        编辑
-                      </button>
-                      <button
-                        onClick={() => handleDelete("comments", c.id)}
-                        style={{ ...btnSm, color: "#e0245e" }}
-                      >
-                        删除
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                comments.map((c) => {
+                  const articleTitle =
+                    articles.find((a) => a.id === c.article_id)?.title ||
+                    c.article_id;
+                  return (
+                    <tr key={c.id} style={trStyle}>
+                      <td style={td}>{c.id}</td>
+                      <td style={td}>{articleTitle}</td>
+                      <td style={td}>{c.username}</td>
+                      <td style={{ ...td, maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.content}</td>
+                      <td style={td}>{c.likes}</td>
+                      <td style={td}>{c.created_at?.split("T")[0]}</td>
+                      <td style={td}>
+                        <button onClick={() => startEditComment(c)} style={btnSm}>
+                          编辑
+                        </button>
+                        <button
+                          onClick={() => handleDelete("comments", c.id)}
+                          style={{ ...btnSm, color: "#e0245e" }}
+                        >
+                          删除
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         )}
@@ -543,6 +571,11 @@ export default function AdminPage() {
             <h3 style={{ marginTop: 0 }}>
               编辑评论 #{editingComment.id} ({editingComment.username})
             </h3>
+            {commentLikeUsers.length > 0 && (
+              <div style={{ marginBottom: "0.75rem", fontSize: "0.8rem", opacity: 0.7 }}>
+                点赞用户：{commentLikeUsers.join("、")}
+              </div>
+            )}
             <label style={labelStyle}>
               内容
               <textarea

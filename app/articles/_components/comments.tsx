@@ -16,13 +16,9 @@ interface CommentData {
 export default function Comments({ articleId }: { articleId: string }) {
   const [token, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [text, setText] = useState('');
   const [comments, setComments] = useState<CommentData[]>([]);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
-  const menuRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // 加载评论
@@ -37,23 +33,11 @@ export default function Comments({ articleId }: { articleId: string }) {
     const stored = localStorage.getItem('token');
     if (stored) {
       setToken(stored);
-      setLoading(true);
-      fetchUser(stored).finally(() => setLoading(false));
+      fetchUserName(stored);
       loadMyLikesWithToken(stored);
     }
     loadComments();
   }, [loadComments]);
-
-  // 点击菜单外区域关闭
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    if (menuOpen) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [menuOpen]);
 
   // 自动调整 textarea 高度
   useEffect(() => {
@@ -64,7 +48,7 @@ export default function Comments({ articleId }: { articleId: string }) {
     }
   }, [text]);
 
-  const fetchUser = async (t: string) => {
+  const fetchUserName = async (t: string) => {
     try {
       const res = await fetch(`${getApiBase()}/api/auth/me`, {
         headers: { Authorization: `Bearer ${t}` },
@@ -72,7 +56,6 @@ export default function Comments({ articleId }: { articleId: string }) {
       if (res.ok) {
         const user = await res.json();
         setUsername(user.username);
-        setAvatarUrl(user.avatar_url);
       } else {
         localStorage.removeItem('token');
         setToken(null);
@@ -81,25 +64,6 @@ export default function Comments({ articleId }: { articleId: string }) {
       localStorage.removeItem('token');
       setToken(null);
     }
-  };
-
-  const handleLogin = async () => {
-    try {
-      localStorage.setItem('returnTo', window.location.pathname);
-      const res = await fetch(`${getApiBase()}/api/auth/login-url`);
-      const data = await res.json();
-      window.location.href = data.url;
-    } catch (err) {
-      console.error('获取登录链接失败', err);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    setUsername(null);
-    setAvatarUrl(null);
-    setMenuOpen(false);
   };
 
   // 加载当前用户点赞过的评论 ID
@@ -187,55 +151,6 @@ export default function Comments({ articleId }: { articleId: string }) {
   return (
     <div style={{ borderTop: '1px solid var(--border-color, #ccc)', marginTop: '3rem', paddingTop: '2rem' }}>
       <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '1rem' }}>评论</h3>
-
-      {/* 登录 / 用户信息 */}
-      <div style={{ marginBottom: '1rem' }}>
-        {token ? (
-          <div ref={menuRef} style={{ position: 'relative', display: 'inline-block' }}>
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '4px 10px 4px 4px',
-                border: '1px solid var(--border-color, #ccc)',
-                borderRadius: '20px', background: 'none', color: 'inherit',
-                cursor: 'pointer', fontSize: '0.85rem',
-              }}
-            >
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="" width={24} height={24} style={{ borderRadius: '50%' }} />
-              ) : (
-                <span style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--border-color)', display: 'inline-block' }} />
-              )}
-              <span>{username || '...'}</span>
-            </button>
-            {menuOpen && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 6px)', left: 0, minWidth: '140px',
-                border: '1px solid var(--border-color, #ccc)', borderRadius: '6px',
-                background: 'var(--bg)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                zIndex: 20, overflow: 'hidden',
-              }}>
-                <button onClick={handleLogout} style={{
-                  display: 'block', width: '100%', textAlign: 'left',
-                  padding: '8px 14px', border: 'none', background: 'none',
-                  color: 'inherit', cursor: 'pointer', fontSize: '0.85rem',
-                }}>
-                  退出登录
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <button onClick={handleLogin} style={{
-            padding: '8px 20px', border: '1px solid var(--border-color, #ccc)',
-            borderRadius: '6px', background: 'none', color: 'inherit',
-            cursor: 'pointer', fontSize: '0.9rem',
-          }}>
-            登录
-          </button>
-        )}
-      </div>
 
       {/* 评论列表 */}
       {comments.length > 0 && (

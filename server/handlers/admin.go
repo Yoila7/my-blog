@@ -66,6 +66,32 @@ func AdminGetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// AdminUpdateUser 更新用户（仅管理员）
+func AdminUpdateUser(c *gin.Context) {
+	id := c.Param("id")
+	var user models.User
+	if err := database.DB.First(&user, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
+		return
+	}
+	var req map[string]interface{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求格式错误"})
+		return
+	}
+	updates := map[string]interface{}{}
+	if v, ok := req["is_admin"]; ok {
+		updates["is_admin"] = v
+	}
+	if len(updates) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "没有可更新的字段"})
+		return
+	}
+	database.DB.Model(&user).Updates(updates)
+	database.DB.First(&user, id)
+	c.JSON(http.StatusOK, user)
+}
+
 // AdminDeleteUser 删除用户
 func AdminDeleteUser(c *gin.Context) {
 	id := c.Param("id")
@@ -117,4 +143,16 @@ func AdminUpdateComment(c *gin.Context) {
 	database.DB.Model(&comment).Updates(updates)
 	database.DB.First(&comment, id) // 重新查询获取最新数据
 	c.JSON(http.StatusOK, comment)
+}
+
+// AdminGetCommentLikes 获取某条评论的点赞用户列表
+func AdminGetCommentLikes(c *gin.Context) {
+	id := c.Param("id")
+	var likes []models.CommentLike
+	database.DB.Where("comment_id = ?", id).Find(&likes)
+	usernames := make([]string, len(likes))
+	for i, l := range likes {
+		usernames[i] = l.Username
+	}
+	c.JSON(http.StatusOK, usernames)
 }

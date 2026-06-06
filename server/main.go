@@ -65,10 +65,12 @@ func main() {
 			admin.PUT("/admin/articles/:id", handlers.AdminUpdateArticle)
 			admin.DELETE("/admin/articles/:id", handlers.AdminDeleteArticle)
 			admin.GET("/admin/users", handlers.AdminGetUsers)
-			admin.DELETE("/admin/users/:id", handlers.AdminDeleteUser)
+			admin.PUT("/admin/users/:id", handlers.AdminUpdateUser)
+				admin.DELETE("/admin/users/:id", handlers.AdminDeleteUser)
 			admin.GET("/admin/comments", handlers.AdminGetComments)
 			admin.DELETE("/admin/comments/:id", handlers.AdminDeleteComment)
 			admin.PUT("/admin/comments/:id", handlers.AdminUpdateComment)
+				admin.GET("/admin/comments/:id/likes", handlers.AdminGetCommentLikes)
 		}
 	}
 

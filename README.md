@@ -9,7 +9,8 @@
 ### 前端
 - **文章系统**：层级目录侧边栏、TOC 导航、代码高亮
 - **评论系统**：GitHub OAuth 登录、发表/删除评论、点赞/取消（乐观更新）
-- **管理面板**：`/admin` 路由（无链接入口），管理员可编辑删除文章/用户/评论
+- **统一登录**：导航栏右侧登录/头像/退出，全站共享登录状态
+- **管理面板**：`/admin` 路由（无链接入口），文章/用户/评论的编辑删除；评论编辑可查看点赞用户；仅主管理员可赋予/撤销他人管理员权限
 - **主题切换**：亮色/暗色，基于 `data-theme` 属性 + CSS 变量
 - **项目日志**：时间线样式（`/journal`）
 - **关于页**：静态 HTML 渲染（`/about`）
@@ -161,10 +162,12 @@ go build -o tcp-proxy.exe . && .\tcp-proxy.exe
 | PUT | `/api/admin/articles/:id` | 更新文章 |
 | DELETE | `/api/admin/articles/:id` | 删除文章 |
 | GET | `/api/admin/users` | 用户列表 |
+| PUT | `/api/admin/users/:id` | 更新用户（如权限） |
 | DELETE | `/api/admin/users/:id` | 删除用户 |
 | GET | `/api/admin/comments` | 评论列表 |
 | PUT | `/api/admin/comments/:id` | 编辑评论 |
 | DELETE | `/api/admin/comments/:id` | 删除评论 |
+| GET | `/api/admin/comments/:id/likes` | 评论点赞用户列表 |
 
 ---
 
