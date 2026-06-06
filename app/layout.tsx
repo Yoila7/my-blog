@@ -5,7 +5,7 @@ import AuthProvider from '@/components/AuthProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  icons: { icon: '/note.svg' },
+  icons: [{ url: '/note.svg', type: 'image/svg+xml' }],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
