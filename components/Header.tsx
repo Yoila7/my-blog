@@ -49,19 +49,23 @@ export default function Header() {
       fetch(`${getApiBase()}/api/auth/me`, {
         headers: { Authorization: `Bearer ${stored}` },
       })
-        .then((r) => (r.ok ? r.json() : null))
+        .then((r) => {
+          if (r.ok) return r.json();
+          // 仅 401（token 过期）才清除
+          if (r.status === 401) {
+            localStorage.removeItem('token');
+            setToken(null);
+          }
+          return null;
+        })
         .then((user) => {
           if (user) {
             setUsername(user.username);
             setAvatarUrl(user.avatar_url);
-          } else {
-            localStorage.removeItem('token');
-            setToken(null);
           }
         })
         .catch(() => {
-          localStorage.removeItem('token');
-          setToken(null);
+          // 网络错误不改变登录状态，保持 token
         });
     }
   }, []);
@@ -104,7 +108,10 @@ export default function Header() {
     setUsername(null);
     setAvatarUrl(null);
     setMenuOpen(false);
-    window.location.href = '/';
+    // 仅在管理员面板退出时跳转回主页
+    if (window.location.pathname.startsWith('/admin')) {
+      window.location.href = '/';
+    }
   };
 
   return (
