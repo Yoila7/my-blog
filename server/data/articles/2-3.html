@@ -1,0 +1,198 @@
+<p>JavaScript是可插入HTML页面的编程代码</p>
+
+<h2>用法</h2>
+
+<h3>内部</h3>
+
+<p>在&lt;head&gt;或&lt;body&gt;中插入&lt;script&gt;标签，直接在标签中写JS代码，标签位置会影响页面加载顺序。</p>
+
+<h3>外部</h3>
+
+<p>同样插入&lt;script&gt;标签，但是不直接写内容，而是用外部文件导入。</p>
+
+<p>例如</p>
+
+<code>
+    &lt;script src="myScript.js"&gt;&lt;/script&gt;
+</code>
+
+<h2>输出方式</h2>
+
+<h3>window.alert();</h3>
+
+<p>弹出警示框显示括号中的数据，可以是数字、表达式、字符串等。</p>
+
+<h3>操作HTML元素</h3>
+
+<p>document.getElementById(id)</p>
+
+<p>利用id指定元素</p>
+
+<h3>.innerHTML</h3>
+
+<p>获取或修改元素内容（像一个变量）</p>
+
+<p>例如</p>
+
+<code>
+    document.getElementById("demo").innerHTML = "段落已修改。";
+</code>
+
+<h3>写入HTML文档</h3>
+
+<code>document.write();</code>
+
+<p>直接写入括号中的内容，常用于页面的调试</p>
+
+<p>注意：页面加载中使用会插入该内容，页面加载完成后使用会覆盖整个页面。</p>
+
+<h3>写入控制台</h3>
+
+<code>console.log();</code>
+
+<p>向调试控制台写入括号中的内容，并不影响原来页面的显示。</p>
+
+<h2>JS语法</h2>
+
+<h3>JS字面量</h3>
+
+<p>数字：整数、小数或科学计数（e）</p>
+
+<p>字符串：用单或双引号</p>
+
+<p>表达式</p>
+
+<p>数组：中括号 例如：[ 1, 2, 3 ]</p>
+
+<p>对象：大括号和冒号 例如：{ firstname: "John", lastname: "Doe" }</p>
+
+<p>函数：function 例如：function myFunction(a, b) { return a * b;}</p>
+
+<h3>JS变量</h3>
+
+<p>= 赋值</p>
+
+<p>var：ES5 引入的变量声明方式，具有函数作用域。</p>
+
+<p>let：ES6 引入的变量声明方式，具有块级作用域（即只在距离最近的一对大括号内有效）。</p>
+
+<p>const：ES6 引入的常量声明方式，具有块级作用域，且值不可变。</p>
+
+<h3>JS注释</h3>
+
+<p>双斜杠// 或 /* */ 多行注释</p>
+
+<h3>JS语句</h3>
+
+<p>;分隔语句 {}组合语句 \折行</p>
+
+<h3>JS数据类型</h3>
+
+<p>变量均拥有动态类型</p>
+
+<p>typeof 可用于查询变量类型</p>
+
+<p>声明变量类型：var x=new Number/Boolean/String/Array/Object;</p>
+
+<p>对象寻址方式：name=person.lastname;/name=person["lastname"];二者均可</p>
+
+<h3>Undefined and Null</h3>
+
+<p>变量为undefined表示未赋值或不需要，变量被赋值为null则会被释放内存</p>
+
+<h3>JS对象</h3>
+
+<p>本质上是键值对的集合</p>
+
+<p>值也可以是函数</p>
+
+<p>例如</p>
+
+<pre><code>
+    var person = {
+        firstName: "John",
+        lastName : "Doe",
+        fullName : function() 
+        {
+        return this.firstName + " " + this.lastName;
+        }
+    };
+    document.getElementById("demo").innerHTML = person.fullName();
+</code></pre>
+
+<h3>JS作用域</h3>
+
+<p>函数外定义为全局变量，函数内定义为局部变量，未定义但是在函数内调用为全局变量</p>
+
+<p>所有全局变量都属于window对象</p>
+
+<h3>JS事件</h3>
+
+<code>&lt;some-HTML-element some-event="JavaScript 代码"&gt;</code>
+
+<p>可以在发生某种事件时执行对应JS代码</p>
+
+<h4>常见事件</h4>
+
+<p>
+    onchange	HTML 元素改变<br/>
+    onclick	用户点击 HTML 元素<br/>
+    onmouseover	鼠标指针移动到指定的元素上时发生<br/>
+    onmouseout	用户从一个 HTML 元素上移开鼠标时发生<br/>
+    onkeydown	用户按下键盘按键<br/>
+    onload	浏览器已完成页面的加载<br/>
+</p>
+
+<h3>JS字符串</h3>
+
+<h4>字符串长度</h4>
+
+<p>内置属性length可用于查询</p>
+<p>例如：<code>str.length</code></p>
+
+<h4>字符转义</h4>
+
+<pre><code>
+\'	单引号
+\"	双引号
+\\	反斜杠
+\n	换行
+\r	回车
+\t	tab(制表符)
+\b	退格符
+\f	换页符
+</code></pre>
+
+<h4>模板字符串</h4>
+
+<p>用反引号`包裹</p>
+
+<p>其中可以直接加入HTML代码，可以用${}包裹后加入表达式，表达式中可调用函数。</p>
+
+<h3>==和===</h3>
+
+<p>==为等于（值相同） 10=="10"为true</p>
+
+<p>===为绝对等于（类型和值均相同） 10==="10"为false</p>
+
+<h3>JS for循环</h3>
+
+<p>两种方式</p>
+
+<code>for (var i=0; i&lt;5; i++)</code>
+
+<code>for (x in person)</code>
+
+<h3>JS标签</h3>
+
+<code>label:statements</code>
+
+<p>以这种方式可以为语句或语句块起名为label</p>
+
+<pre><code>
+break label；跳出label语句
+continue label；结束label语句的单次迭代
+</code></pre>
+
+<p>这两者可以用于在内部循环中跳出外部循环</p>
+

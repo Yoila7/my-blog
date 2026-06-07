@@ -24,11 +24,11 @@
   { "id": "3-7", "title": "GORM", "date": "2026-05-30" },
   { "id": "4-0", "title": "运维", "date": "2026-06-05" },
   { "id": "4-1", "title": "Docker容器化", "date": "2026-06-05" },
-  { "id": "4-2", "title": "云基础设施", "date": "2026-06-05" },
-  { "id": "4-3", "title": "Linux服务器管理", "date": "2026-06-05" },
+  { "id": "4-2", "title": "Docker Compose", "date": "2026-06-05" },
+  { "id": "4-3", "title": "DevSecOps", "date": "2026-06-05" },
   { "id": "4-4", "title": "前端部署流水线", "date": "2026-06-05" },
   { "id": "4-5", "title": "CI/CD流水线部署", "date": "2026-06-05" },
-  { "id": "4-6", "title": "Docker Compose", "date": "2026-06-05" },
-  { "id": "4-7", "title": "DevSecOps", "date": "2026-06-05" },
+  { "id": "4-6", "title": "云基础设施", "date": "2026-06-05" },
+  { "id": "4-7", "title": "Linux服务器管理", "date": "2026-06-05" },
   { "id": "4-8", "title": "域名、DNS与HTTP配置", "date": "2026-06-05" }
 ]

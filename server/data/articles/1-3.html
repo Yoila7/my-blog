@@ -1,0 +1,41 @@
+<h2>简介</h2>
+
+<p>WSL 的全称是 Windows Subsystem for Linux（适用于 Windows 的 Linux 子系统）。</p>
+
+<p>它能让你在不安装虚拟机、不制作双系统的情况下，直接在 Windows 里运行一个原汁原味、速度极快的 Linux 环境。</p>
+
+<h2>为什么要用Linux系统</h2>
+
+<p>我的理解：作为编程环境而言，Linux内核轻量化，稳定性强。</p>
+
+<h2>为什么选择WSL</h2>
+
+<p><del>感觉双系统和虚拟机都好麻烦啊<del></p>
+
+<p>WSL有占用硬盘空间少，启动速度快，Windows和Linux系统同时运行无缝切换的优势。</p>
+
+<h2>WSL的安装教程</h2>
+
+<a href="https://learn.microsoft.com/zh-cn/windows/wsl/setup/environment">官网网页</a>
+
+<p>本人部署的是Ubuntu Linux（使用最广泛的一个版本）</p>
+
+<h2>WSL的使用体验</h2>
+
+<p>它没有系统本身的GUI，只能用CLI的方式与它交互（打开Windows Terminal选择名为Ubuntu的Shell）。因此不会有想象中的全新的系统界面，你实际上还在Windows系统之中，在你的Windows系统中运行着Linux的内核，同时你仍然可以做所有你本来在Windows系统中可以做的任何事。安装完插件后你甚至可以打开VScode自动运行WSL然后在VScode中的编程就已经是在Linux环境下的了（后面会讲）。</p>
+
+<h2>WSL安装完要做什么</h2>
+
+<p>网络问题：后续一系列的安装过程可能会涉及一些需要从GitHub下载的软件，但是你在Windows中的加速器/VPN似乎不会对WSL生效，甚至还会导致一些额外的问题。因此如果遇到下载失败或者进度一直为0的情况，可以考虑问AI怎么用国内镜像站下载（也是用命令行，但是网址不一样了）。</p>
+
+<p>就像重装完系统，此时你的Linux是一个白板，你在Windows系统中安装的所有东西都不会存在，所以要在WSL中进行一系列的安装和配置。</p>
+
+<p>以下内容的具体步骤较为繁琐，所以只讲了要做什么。具体怎么办，发生了错误怎么解决都可以问AI（比如命令行返回错误信息，就直接复制粘贴给AI，并详细描述你做了什么，你想达成什么效果）。</p>
+
+<p>VScode的WSL扩展：打开VScode，在扩展中查找WSL并安装，然后利用这个扩展连接到你的WSL。官方网页（https://learn.microsoft.com/zh-cn/windows/wsl/tutorials/wsl-vscode）（这个扩展的意义：在Windows系统下打开VScode，像原本在Windows系统下一样编程，但是Vscode会将你的代码传递给WSL保存，编译，运行。连接到WSL后，在VScode中新建/移动文件、文件夹等操作就直接作用于你的WSL系统，这样你就不需要记忆这些命令行操作了，直接在VScode中就可以完成。总之是VScode在调用WSL，VScode本身还是在Windows系统下，因此WSL中没有也不必安装VScode。）</p>
+
+<p>C++等语言的环境配置（命令行实现）</p>
+
+<p>安装vibe coding所需的软件（命令行实现）<del>没错当你连接到WSL后你的Claude Code都要重新部署</del></p>
+
+<p>连接至WSL后在VScode中的扩展中，会出现全新的一栏：WSL。将你在本地安装的扩展中你认为需要用到的部分在WSL中再安装一遍。</p>

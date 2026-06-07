@@ -1,0 +1,134 @@
+<p>CSS是为了给HTML中的元素设计具体的样式（如颜色，位置等）</p>
+
+<h2>CSS具体使用方式</h2>
+
+<p>
+    选择器{一个或多个声明}
+    <br />
+    例如：<code>h1{color:blue}</code>
+</p>
+
+<h2>CSS的id和class</h2>
+
+<h3>目的</h3>
+
+<p>为了指定某些元素使用CSS，而非所有同类型元素都用。（如上例中的CSS会使得所有的h1元素都套用蓝色的样式）</p>
+
+<h3>id选择器</h3>
+
+<p>为指定id的元素定义CSS样式（元素id唯一，不能有多个元素共用同一id，否则可能引发错误，因此id选择器只能用于某一个元素）</p>
+
+<h4>定义</h4>
+
+    <code>#id名{一个或多个声明}</code>
+
+<h4>使用</h4>
+
+    <code>&lt;元素类型 id="id名"&gt;元素内容&lt;/元素类型&gt;</code>
+
+<h4>例如</h4>
+
+    <pre><code>
+        #para1
+        {
+            text-align:center;
+            color:red;
+        }
+        &lt;p id="para1"&gt;Hello World!</p>
+    </code></pre>
+
+<h4>注意</h4>
+    <p>ID不要以数字开头</p>
+
+<h3>class选择器</h3>
+
+<p>为某一类元素定义CSS样式，可以用于多个元素。</p>
+
+<h4>定义</h4>
+
+    <code>.class名{一个或多个声明}</code>
+
+<h4>使用</h4>
+
+    <code>&lt;元素类型 class="class名"&gt;元素内容&lt;/元素类型&gt;</code>
+
+<h4>例如</h4>
+
+    <pre><code>
+        .center
+        {
+            text-align:center;
+        }
+        &lt;h1 class="center"&gt;标题居中&lt;/h1&gt;
+        &lt;p class="center"&gt;段落居中。&lt;/p&gt; 
+    </code></pre>
+
+<h4>注意</h4>
+    <p>class名也不能以数字开头</p>
+
+<p>两者间id选择器优先级更高，且两者可以嵌套使用。</p>
+
+
+<h2>CSS创建</h2>
+
+<p>有三种插入样式表的方式：外部样式表(External style sheet)、内部样式表(Internal style sheet)、内联样式(Inline style)</p>
+
+<h3>外部样式表</h3>
+
+<p>当多个页面需要用到同种样式时适合用外部样式表，将样式写在外部的.css文件中，有页面需要用到时在页面的<head>元素中用<link>标签链接这个CSS文件即可调用其中的样式，避免了重复。</p>
+
+<p>例如</p>
+
+<pre><code>
+    &lt;head&gt;
+        &lt;link rel="stylesheet" type="text/css" href="mystyle.css"&gt;
+    &lt;/head&gt;
+</code></pre>
+
+<p>rel="stylesheet" 表示连接的是样式表</p>
+
+<p>type="text/css"表示用的是CSS，在HTML5时代，默认就是CSS，可缺省</p>
+
+<p>href="mystyle.css"表示连接到同一目录下的名为"mystyle.css"的CSS文件</p>
+
+<h3>内部样式表</h3>
+
+<p>仅仅单个文档需要用到的样式可以直接写在文档中，不用作为独立文件。</p>
+
+<p>例如</p>
+
+<pre><code>
+    &lt;head&gt;
+        &lt;style&gt;
+            hr {color:sienna;}
+            p {margin-left:20px;}
+            body {background-image:url("images/back40.gif");}
+        &lt;/style&gt;
+    &lt;/head&gt;
+</code></pre>
+
+<p>仍然要写在页面的&lt;head&gt;元素中，但是还要用&lt;style&gt;标签包裹。</p>
+
+<h3>内联样式</h3>
+
+<p>仅仅单个元素需要用到的样式可以直接写在元素中，用元素的style属性定义。</p>
+
+<p>例如</p>
+
+<code>
+    &lt;p style="color:sienna;margin-left:20px"&gt;这是一个段落。&lt;/p&gt;
+</code>
+
+<h2>多重样式</h2>
+
+<p>如果某些属性在不同的样式表中被同样的选择器定义，那么属性值将从更具体的样式表中被继承过来。 </p>
+
+<h3>多重样式优先级</h3>
+
+<p>样式表允许以多种方式规定样式信息。样式可以规定在单个的 HTML 元素中，在 HTML 页的头元素中，或在一个外部的 CSS 文件中。甚至可以在同一个 HTML 文档内部引用多个外部样式表。</p>
+
+<p>一般情况下，优先级如下：（内联样式）Inline style > （内部样式）Internal style sheet >（外部样式）External style sheet > 浏览器默认样式</p>
+
+<p>个人理解：样式按默认、外部/内部、内联的顺序定义，对于同个元素若同一属性被多次定义，则后者覆盖前者，外部和内部属于同一优先级，具体看在&lt;head&gt;元素中两者顺序的先后，后写覆盖先写。</p>
+
+

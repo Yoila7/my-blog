@@ -1,0 +1,103 @@
+<p>本人用的是Claude Code</p>
+<a href="https://docs.bigmodel.cn/cn/coding-plan/tool/claude">参考教程</a>
+
+<h2>Step 1</h2>
+
+<p>安装Node.js和Git（Git前面已经讲过了，以下是nvm和Node.js的安装命令，其中nvm用于管理后者的版本）</p>
+
+<h3>Linux or Mac</h3>
+
+<pre><code>
+# 第⼀步 Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+
+# 第⼆步 in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# 第三步 Download and install Node.js:
+nvm install 24
+
+# 第四步 Verify the Node.js version:
+node -v 
+# Should print "v24.14.1".
+
+# 第五步 Verify npm version:
+npm -v 
+# Should print "11.11.0".
+
+</code></pre>
+
+<h3>Windows</h3>
+
+<pre><code>
+# Download and install Chocolatey:
+powershell -c "irm https://community.chocolatey.org/install.ps1|iex"
+
+# Download and install Node.js:
+choco install nodejs --version="24.14.1"
+
+# Verify the Node.js version:
+node -v 
+# Should print "v24.14.1".
+
+</code></pre>
+
+<h2>Step 2</h2>
+
+<p>安装Claude Code</p>
+
+<p>
+    进入终端，执行以下命令:
+
+    <pre><code>
+        npm install -g @anthropic-ai/claude-code
+        claude --version
+
+    </code></pre>
+
+    执行第二个命令后若返回版本号，证明安装成功。
+    若遇到环境配置和路径问题，可以用错误信息问AI
+</p>
+
+<h2>Step 3</h2>
+
+<p>安装cc-switch将Claude Code模型替换，本人最初用的是minimax</p>
+
+<p>
+    安装命令
+
+    <pre><code>
+        npm install -g @songhe/cc-switch
+    </code></pre>
+
+    安装后需要添加模型配置，这一步要先从对应模型官网购买套餐并获取API。具体步骤因模型而异，有不会的就寻求AI帮助。
+</p>
+
+<p>
+    配置命令（以Minimax为例，如果是Windows系统可以直接打开cc-switch用GUI完成）
+
+    <pre><code>
+    # 格式：ccs add <配置名> <API地址> <API密钥>
+    ccs add minimax https://api.minimaxi.com/anthropic sk-你的Minimax密钥
+
+    # 切换到 MiniMax 配置
+    ccs switch minimax
+
+    # 查看当前使用的配置
+    ccs current
+
+    # 查看所有已保存的配置
+    ccs list
+
+    </code></pre>
+</p>
+
+<h2>Step4</h2>
+
+<p>日常使用方式：终端或者VScode插件（如果是为了vibe coding应该用的都是后者吧）</p>
+
+<p>前者操作我也不太熟练，以下是后者的使用体验。</p>
+
+<p>在VScode中搜索并安装Claude Code插件（再次强调Windows和WSL都要用的话就要装两遍），安装后找到Claude图标点击后就可以使用，自动会替换为你在cc-switch中设置的模型。问他一个简单的问题可以检测前面所有步骤是否成功。</p>
+
+<p>在Claude Code中可以问他所有你平常问AI的问题，不同之处在于他拥有阅读并修改你的文件的能力，他可以根据你的要求创建、修改代码，甚至能在你电脑中搜索并修改配置文件，或者直接执行命令行命令（这样你不记得命令时都不需要问AI再放进终端了，更加方便），当然默认会在任何修改操作前征求你的同意。</p>
