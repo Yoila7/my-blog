@@ -50,17 +50,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & push backend image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          push: true
-          tags: ghcr.io/yoila7/my-blog-backend:latest
+      - name: Build & push backend
+        working-directory: server
+        run: |
+          docker build -t ghcr.io/yoila7/my-blog-backend:latest .
+          docker push ghcr.io/yoila7/my-blog-backend:latest
 
-      - name: Build & push frontend image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile.frontend
-          push: true
-          tags: ghcr.io/yoila7/my-blog-frontend:latest
+      - name: Build & push frontend
+        run: |
+          docker build -f Dockerfile.frontend -t ghcr.io/yoila7/my-blog-frontend:latest .
+          docker push ghcr.io/yoila7/my-blog-frontend:latest
