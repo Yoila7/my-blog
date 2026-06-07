@@ -68,6 +68,10 @@ body {
   margin-bottom: 0.75rem;
   line-height: 1.75;
 }
+.article-content a {
+  color: #5b9bd5;
+  text-decoration: underline;
+}
 .article-content pre {
   background: var(--border-color);
   padding: 0.75rem 1rem;
