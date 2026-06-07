@@ -8,38 +8,34 @@
 
 <h3>Linux or Mac</h3>
 
-<pre><code>
-    # 第⼀步 Download and install nvm:
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+<pre><code># 第⼀步 Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
-    # 第⼆步 in lieu of restarting the shell
-    \. "$HOME/.nvm/nvm.sh"
+# 第⼆步 in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
 
-    # 第三步 Download and install Node.js:
-    nvm install 24
+# 第三步 Download and install Node.js:
+nvm install 24
 
-    # 第四步 Verify the Node.js version:
-    node -v 
-    # Should print "v24.14.1".
+# 第四步 Verify the Node.js version:
+node -v 
+# Should print "v24.14.1".
 
-    # 第五步 Verify npm version:
-    npm -v 
-    # Should print "11.11.0".
-</code></pre>
+# 第五步 Verify npm version:
+npm -v 
+# Should print "11.11.0".</code></pre>
 
 <h3>Windows</h3>
 
-<pre><code>
-    # Download and install Chocolatey:
-    powershell -c "irm https://community.chocolatey.org/install.ps1|iex"
+<pre><code># Download and install Chocolatey:
+powershell -c "irm https://community.chocolatey.org/install.ps1|iex"
 
-    # Download and install Node.js:
-    choco install nodejs --version="24.14.1"
+# Download and install Node.js:
+choco install nodejs --version="24.14.1"
 
-    # Verify the Node.js version:
-    node -v 
-    # Should print "v24.14.1".
-</code></pre>
+# Verify the Node.js version:
+node -v 
+# Should print "v24.14.1".</code></pre>
 
 <h2>Step 2</h2>
 
@@ -48,10 +44,8 @@
 <p>
     进入终端，执行以下命令:
 
-    <pre><code>
-    npm install -g @anthropic-ai/claude-code
-    claude --version
-    </code></pre>
+    <pre><code>npm install -g @anthropic-ai/claude-code
+claude --version</code></pre>
 
     执行第二个命令后若返回版本号，证明安装成功。
     若遇到环境配置和路径问题，可以用错误信息问AI
@@ -64,9 +58,7 @@
 <p>
     安装命令
 
-    <pre><code>
-    npm install -g @songhe/cc-switch
-    </code></pre>
+    <pre><code>npm install -g @songhe/cc-switch</code></pre>
 
     安装后需要添加模型配置，这一步要先从对应模型官网购买套餐并获取API。具体步骤因模型而异，有不会的就寻求AI帮助。
 </p>
@@ -74,20 +66,17 @@
 <p>
     配置命令（以Minimax为例，如果是Windows系统可以直接打开cc-switch用GUI完成）
 
-    <pre><code>
-    # 格式：ccs add <配置名> <API地址> <API密钥>
-    ccs add minimax https://api.minimaxi.com/anthropic sk-你的Minimax密钥
+    <pre><code># 格式：ccs add <配置名> <API地址> <API密钥>
+ccs add minimax https://api.minimaxi.com/anthropic sk-你的Minimax密钥
 
-    # 切换到 MiniMax 配置
-    ccs switch minimax
+# 切换到 MiniMax 配置
+ccs switch minimax
 
-    # 查看当前使用的配置
-    ccs current
+# 查看当前使用的配置
+ccs current
 
-    # 查看所有已保存的配置
-    ccs list
-
-    </code></pre>
+# 查看所有已保存的配置
+ccs list</code></pre>
 </p>
 
 <h2>Step4</h2>
