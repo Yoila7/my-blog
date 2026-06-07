@@ -130,7 +130,7 @@ export default function Header() {
               <img src={sunIcon.src} alt="浅色模式" width={24} height={24} />
             )}
           </button>
-          <a href="#" target="_blank" rel="noopener noreferrer" style={styles.iconBtn} title="Git项目仓库">
+          <a href="https://github.com/Yoila7/my-blog" target="_blank" rel="noopener noreferrer" style={styles.iconBtn} title="Git项目仓库">
             <span style={maskStyle(gitIcon.src)} />
           </a>
 
