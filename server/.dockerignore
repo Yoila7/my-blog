@@ -1,0 +1,7 @@
+# server 构建上下文专用 —— 覆盖根目录 .dockerignore 的影响
+# 仅排除编译产物，数据文件必须包含
+blog-server.exe
+seed.exe
+blog-server
+seed
+*.log
