@@ -1,0 +1,3 @@
+# 确保 HTML/JSON 在所有平台使用 LF 换行，避免本地 Windows (CRLF) 与 CI/CD Linux (LF) 内容不一致
+server/data/**/*.html text eol=lf
+server/data/*.json text eol=lf
