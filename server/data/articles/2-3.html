@@ -109,15 +109,14 @@
 <p>例如</p>
 
 <pre><code>
-    var person = {
-        firstName: "John",
-        lastName : "Doe",
-        fullName : function() 
-        {
+var person = {
+    firstName: "John",
+    lastName : "Doe",
+    fullName : function() {
         return this.firstName + " " + this.lastName;
-        }
-    };
-    document.getElementById("demo").innerHTML = person.fullName();
+    }
+};
+document.getElementById("demo").innerHTML = person.fullName();
 </code></pre>
 
 <h3>JS作用域</h3>
