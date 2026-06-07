@@ -9,9 +9,8 @@ node_modules
 server/blog-server.exe
 server/blog-server
 
-# 数据文件（通过 volume 挂载，不打包进镜像）
-data/
-server/data/
+# 数据文件（通过 volume 挂载，不打包进前端镜像；后端通过 volume 加载）
+/data/
 
 # IDE 配置
 .vscode
